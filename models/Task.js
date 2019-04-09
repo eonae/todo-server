@@ -20,7 +20,18 @@ const schema = mongoose.Schema({
   isStarred: {
     type: Boolean,
     default: false
+  },
+  created: {
+    type: Date,
+    default: Date.now()
+  },
+  edited: {
+    type: Date,
+    default: Date.now()
   }
 })
+
+
+
 
 module.exports = mongoose.model('Task', schema);

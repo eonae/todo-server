@@ -30,15 +30,56 @@ schema.pre('save', function(next) {
   });
 });
 
-schema.methods.checkPassword = (password, callback) => {
-    bCrypt.compare(password, passwordHash, (err, same) => {
-      if (err) throw err
-      else {
-        if (same) callback(true);
-        else callback(false);
-      }
-    });
-}
+schema.methods.checkPassword = function(password, callback) {
+  bCrypt.compare(password, this.password, (err, same) => {
+    if (err) {
+      throw err;
+    } else {
+      if (same) callback(true);
+      else callback(false);
+    }
+  });
+};
+
+schema.methods.serialize = function() {
+  return {
+    id: this._id,
+    username: this.username,
+    email: this.email
+  }
+};
+
+schema.statics.authenticate = function(credentials, callback) {
+
+  const status = this.AUTH_RESULTS;
+
+  this.findOne({ username: credentials.username }, (err, user) => {
+
+    if (err) {
+      console.log(err);
+      callback(status.INTERNAL_ERROR);
+    } else if (!user) {
+      callback(status.INVALID_USERNAME);
+    } else {
+      user.checkPassword(credentials.password, match => {
+
+        if (match) {
+          callback(status.SUCCESS, user);
+        } else {
+          callback(status.INVALID_PASSWORD);
+        }
+      })
+    }
+  });
+}; 
+
+schema.statics.AUTH_RESULTS = {
+  SUCCESS: 0,
+  INVALID_USERNAME: 1,
+  INVALID_PASSWORD: 2,
+  USER_LOCKED: 3, // На будущее
+  INTERNAL_ERROR: 4
+};
 
 module.exports = mongoose.model('User', schema);
 

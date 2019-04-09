@@ -1,64 +1,47 @@
 
 const express = require('express');
 const router = express.Router();
-const bCrypt = require('bcrypt');
 
 const User = require('../models/User');
 
-// Переписать на промисах.
-
 router.post('/register', (req, res) => {
 
-  bCrypt.hash(req.body.password, 10, (err, hash) => {
-
-    if (err) {
-      res.send('bCrypt hash function error\n' + err.message);
-    } else {
-      req.body.password = hash;
-    
-      const user = new User(req.body);
-      user.save(err => {
-        if (err)
-          res.send('Save error\n' + err.message);
-        else {
-          debugger;
-          res.send('User saved successfully');
-        }
-      });
-    }
+  // Добавить валидацию данных (в частности имени пользователя)
+  new User(req.body)
+  .save()
+  .then(user => {
+    console.log(`User ${user.username} is successfully registeted`);
+  // Добавить уведомление по имейлу и активацию аккаунта (верификацию имейла)
+  })
+  .catch(err => {
+    console.log(err);
   });
 });
 
 router.post('/login', (req, res) => {
 
-  User.findOne({ username: req.body.username }, (err, user) => {
-    if (err) {
-      debugger;
-      res.sendStatus(500);
-    }
+  User.authenticate(req.body, (authResult, user) => {
 
-    else if (!user) {
+    const status = User.AUTH_RESULTS;
 
-      res.sendStatus(401);
-    }
-      
-    else {
-      bCrypt.compare(req.body.password, user.password, (err, same) => {
+    switch (authResult) {
 
-        if (err)
-          res.send('bCrypt error!\n' + err.message);
-        else {
-          if (!same) {
-            res.sendStatus(401);
-          }
-          else {
-            req.session.user = user;
-            req.session.authorized = true;
-            debugger;
-            res.send(req.session.user); // Пока так.
-          }
-        }
-      });
+      case status.SUCCESS:
+        req.session.user = user;
+        res.send(user.serialize());
+        break;
+
+      case status.INVALID_USERNAME:
+        res.sendStatus(403);
+        break;
+
+      case status.INVALID_PASSWORD:
+        res.sendStatus(403);
+        break;
+
+      default:
+        res.sendStatus(500);
+        break;
     }
   });
 });
@@ -66,7 +49,6 @@ router.post('/login', (req, res) => {
 router.get('/logout', (req, res) => {
   if (req.session.user) {
     delete req.session.user;
-    delete req.session.authorized;
     res.send('logged out!');
   } else {
     res.send('Your were not logged in!');

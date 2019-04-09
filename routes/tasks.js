@@ -5,7 +5,7 @@ const Task = require('../models/Task');
 
 router.get('/tasks', (req, res) => {
   debugger;
-  if (req.session.authorized) {
+  if (req.session.user) {
     Task.find({ userId: req.session.user._id })
         .then(tasks => {
           res.send(tasks);
