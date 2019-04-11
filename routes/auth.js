@@ -55,4 +55,12 @@ router.get('/logout', (req, res) => {
   }
 });
 
+router.get('/current', (req, res) => {
+  if (req.session.user) {
+    res.send(req.session.user.serialize());
+  } else {
+    res.sendStatus(403);
+  }
+});
+
 module.exports = router;

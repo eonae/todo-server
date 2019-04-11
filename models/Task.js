@@ -29,9 +29,18 @@ const schema = mongoose.Schema({
     type: Date,
     default: Date.now()
   }
-})
+});
 
-
-
+schema.methods.serialize = function () {
+  return {
+    id: this._id,
+    text: this.text,
+    notes: this.notes,
+    isCompleted: this.isCompleted,
+    isStarred: this.isStarred,
+    created: this.created,
+    edited: this.edited
+  }
+}
 
 module.exports = mongoose.model('Task', schema);

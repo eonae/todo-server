@@ -29,15 +29,16 @@ app.use(session({
   cookie: {
     path: '/',
     httpOnly: true,
-    maxAge: 60 * 60 * 1000
+    maxAge: 60 * 60 * 1000,
+    
   },
   resave: true,
   saveUninitialized: false
 }));
 
-app.use('/', auth);
+app.use('/auth', auth);
 
-app.use('/', tasks);
+app.use('/tasks', tasks);
 
 app.get('/admin', (req, res) => {
 
