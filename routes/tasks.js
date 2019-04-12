@@ -30,7 +30,7 @@ router.get('/', (req, res) => {
 // Добавление или перезапись
 router.post('/', (req, res) => {
 
-    // Добавить валидацию
+  // Добавить валидацию
   delete req.body.id;
   req.body.userId = req.session.user._id;
 
@@ -47,14 +47,13 @@ router.post('/', (req, res) => {
 
 router.put('/:id', (req, res) => {
 
-  debugger;
-
   // Добавить валидацию
 
   Task
-    .findByIdAndUpdate(req.params.id, req.body)
+    .findOneAndUpdate({ _id: req.params.id }, req.body, {new: true})
     .then(task => {
       if (task) {
+
         res.send(task.serialize());
       } else {
         res.sendStatus(400);
