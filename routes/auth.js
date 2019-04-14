@@ -4,18 +4,45 @@ const router = express.Router();
 
 const User = require('../models/User');
 
-router.post('/register', (req, res) => {
+router.get('/require', (req, res) => {
 
+  if (req.session.user) {
+    User
+      .findOne({ _id: req.session.user._id })
+      .then(user => {
+        res.send(user.serialize());
+      })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(500);
+      })
+  } else {
+    res.sendStatus(403);
+  }
+});
+
+router.post('/register', (req, res) => {
   // Добавить валидацию данных (в частности имени пользователя)
-  new User(req.body)
-  .save()
-  .then(user => {
-    console.log(`User ${user.username} is successfully registeted`);
-  // Добавить уведомление по имейлу и активацию аккаунта (верификацию имейла)
-  })
-  .catch(err => {
-    console.log(err);
-  });
+    new User(req.body)
+      .save()
+      .then(() => {
+        res.sendStatus(200);
+      })
+      .catch(err => {
+        console.log(err);
+        res.sendStatus(err.code == 11000 ? 403 : 500);
+        
+      });
+
+  // new User(req.body)
+  // .save()
+  // .then(user => {
+  //   console.log(`User ${user.username} is successfully registeted`);
+  // // Добавить уведомление по имейлу и активацию аккаунта (верификацию имейла)
+  // })
+  // .catch(err => {
+  //   console.log(err);
+  // });
 });
 
 router.post('/login', (req, res) => {

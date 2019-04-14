@@ -17,12 +17,13 @@ app.use(cors({
   credentials: true
 }));
 
+app.use(express.static('static'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 app.use(session({
   store: new MongoStore({
-    mongooseConnection: db
+    mongooseConnection: db,
   }),
   secret: 'best todo ever',
   cookie: {
@@ -47,9 +48,8 @@ app.get('/admin', (req, res) => {
   else res.sendStatus(403);
 });
 
-// app.use((req, res, next) => {
-//   console.log('redirect');
-//   res.redirect('/');
-// });
+app.use((req, res) => {
+  res.redirect('/');
+});
 
 app.listen(process.env.PORT || cfg.port);

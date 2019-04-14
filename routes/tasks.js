@@ -48,9 +48,10 @@ router.post('/', (req, res) => {
 router.put('/:id', (req, res) => {
 
   // Добавить валидацию
+  const changes = Object.assign({}, req.body, { edited: Date.now() });
 
   Task
-    .findOneAndUpdate({ _id: req.params.id }, req.body, {new: true})
+    .findOneAndUpdate({ _id: req.params.id }, changes, {new: true})
     .then(task => {
       if (task) {
 
