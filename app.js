@@ -36,17 +36,9 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use('/auth', auth);
+app.use('api/auth', auth);
 
-app.use('/tasks', tasks);
-
-app.get('/admin', (req, res) => {
-
-  if (req.session.user)
-    res.send(req.session.user);
-
-  else res.sendStatus(403);
-});
+app.use('api/tasks', tasks);
 
 app.use((req, res) => {
   res.redirect('/');
