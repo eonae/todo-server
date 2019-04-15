@@ -5,7 +5,6 @@ const router = express.Router();
 const User = require('../models/User');
 
 router.get('/require', (req, res) => {
-
   if (req.session.user) {
     User
       .findOne({ _id: req.session.user._id })
@@ -79,14 +78,6 @@ router.get('/logout', (req, res) => {
     res.send('logged out!');
   } else {
     res.send('Your were not logged in!');
-  }
-});
-
-router.get('/current', (req, res) => {
-  if (req.session.user) {
-    res.send(req.session.user.serialize());
-  } else {
-    res.sendStatus(403);
   }
 });
 

@@ -36,11 +36,12 @@ app.use(session({
   saveUninitialized: false
 }));
 
-app.use('api/auth', auth);
+app.use('/api/auth', auth);
 
-app.use('api/tasks', tasks);
+app.use('/api/tasks', tasks);
 
 app.use((req, res) => {
+  debugger;
   res.redirect('/');
 });
 
