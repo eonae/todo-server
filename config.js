@@ -1,5 +1,5 @@
 module.exports = {
   port: 8081,
-  mongoUri: 'mongodb://heroku_b7qdcckm:ujpGhGZ6@ds127376.mlab.com:27376/heroku_b7qdcckm'
+  mongoUri: 'mongodb://heroku_gbhd59v3:kvp3hjqthcj71832oj27ucdosj@ds221271.mlab.com:21271/heroku_gbhd59v3'
   // mongoUri: 'mongodb://localhost:27017/todo'
 }
