@@ -17,7 +17,7 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.static('static'));
+app.use(express.static('dist'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
