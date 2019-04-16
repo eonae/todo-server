@@ -3,6 +3,7 @@ const cfg = require('./config');
 const express = require('express');
 const cors = require('cors');
 const session = require('express-session');
+const history = require('connect-history-api-fallback');
 const db = require('./db');
 const MongoStore = require('connect-mongo')(session);
 
@@ -17,7 +18,6 @@ app.use(cors({
   credentials: true
 }));
 
-app.use(express.static('dist'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
@@ -37,11 +37,9 @@ app.use(session({
 }));
 
 app.use('/api/auth', auth);
-
 app.use('/api/tasks', tasks);
 
-app.use((req, res) => {
-  res.redirect('/');
-});
+app.use(history());
+app.use(express.static('dist'));
 
 app.listen(process.env.PORT || cfg.port);
